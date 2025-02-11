@@ -8,7 +8,8 @@
 - 1 rotacni kloub:
     - **Elbow**: loketni kloub
 - Klouzani lopatky po hrudniku je modelovano pomoci 2 kontaktnich bodu na lopatce (kontaktni teleso je hrudnik modelovany jako elipsoid)
-
+- Momentova ramena a delky svalu jsou pocitany pomoci polynomialni aproximace
+ 
 ## Slozka `Python`
 - `equations.py`
   - hlavni soubor se scripty pro odvozovani vsech rovnic ve tvaru $M(q)\dot{u} = f_{ext}(q,u)$, kde $q$ jsou souradnice a $u$ jsou rychlosti.
@@ -19,8 +20,17 @@
   - Rovnice jsou vygenerovany jako Matlabovske funkce ve slozce `equations_of_motion`
 
 ## `das3.osim`
-  - OpenSim model ramene
+- OpenSim model ramene
 
 ## `shoulder_simulink.slx`
-  - V Simscapu vytvoreny odpovidajici model (beze svalu) pro 'overeni' rovnic
-  - forward dynamics simulace - model s Eulerovy uhly, quaterniony a Simscape model, chyba vyslednych trajektorii mezi rovnicemi a Simscapem modelem je v radu 10e-5 (Simscape pouziva Composite-rigid-body metodu)
+- V Simscapu vytvoreny odpovidajici model (beze svalu) pro 'overeni' mych rovnic
+
+## `main.m`
+- Nacteni prislusnych structu pro Simulink simulaci
+
+## `data_model.mat`
+- Struct s konstantami
+
+## `OS_model_flexion.mat`
+- Struct vygenerovany na zaklade OpenSim modelu, obsahuje koeficienty pro polynomialni aproximace svalu
+- Tento soubor se bude menit na zaklade pohybu ()
