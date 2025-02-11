@@ -23,7 +23,7 @@
 - OpenSim model ramene
 
 ## `shoulder_simulink.slx`
-- V Simscapu vytvoreny odpovidajici model (beze svalu) pro 'overeni' mych rovnic
+- V Simscapu vytvoreny odpovidajici model (beze svalu) pro 'overeni' rovnic
 
 ## `main.m`
 - Nacteni prislusnych structu pro Simulink simulaci
