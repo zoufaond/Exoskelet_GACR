@@ -12,7 +12,7 @@
  
 ## Slozka `Python`
 - `equations.py`
-  - hlavni soubor se scripty pro odvozovani vsech rovnic ve tvaru $M(q)\dot{u} = f_{ext}(q,u)$, kde $q$ jsou souradnice a $u$ jsou rychlosti.
+  - hlavni soubor se scripty pro odvozovani rovnic ve tvaru $M(q)\dot{u} = f_{ext}(q,u)$, kde $q$ jsou souradnice a $u$ jsou rychlosti.
   - `create_eoms_eul` (radek 1043) vytvori rovnice, kde sfericke klouby jsou popsany popsany pomoci Eulerovych uhlu
   - `create_eoms_quat` (radek 680) vytvori rovnice, kde sfericke klouby jsou popsany popsany pomoci quaternionu 
 - `gen_matlab_functions.ipynb`
