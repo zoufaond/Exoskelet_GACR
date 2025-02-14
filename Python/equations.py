@@ -210,18 +210,20 @@ def polynomials_euler(OS_model,derive,model_params_struct, gen_matlab_functions 
         conoid_eps = sp.symbols('conoid_eps')
         conoid_origin = sp.symbols('conoid_origin1:4')
         conoid_insertion = sp.symbols('conoid_insertion1:4')
+        constants_conoid = {'conoid_length': conoid_length,'conoid_stiffness': conoid_stiffness,'conoid_eps': conoid_eps,'conoid_origin': list(conoid_origin),'conoid_insertion': list(conoid_insertion)}
     elif derive == 'numeric':
         conoid_length = model_params_struct['params']['model'].item()['conoid_length'].item()[0][0]
         conoid_k = model_params_struct['params']['model'].item()['conoid_stiffness'].item()[0][0]
         conoid_eps = model_params_struct['params']['model'].item()['conoid_eps'].item()[0][0]
         conoid_origin = model_params_struct['params']['model'].item()['conoid_origin'].item()[0]
         conoid_insertion = model_params_struct['params']['model'].item()['conoid_insertion'].item()[0]
+        constants_conoid = {}
 
     conoid_L = analytic_length_eul('clavicle_r','scapula_r', conoid_origin, conoid_insertion, qpol[3:], OS_model)
     F_conoid = conoid_force(conoid_L, conoid_length, conoid_stiffness, conoid_eps)
     jac_conoid = -sp.Matrix([conoid_L]).jacobian(qpol[3:]).T
     TE_conoid = F_conoid * jac_conoid
-    constants_conoid = {'conoid_length': conoid_length,'conoid_stiffness': conoid_stiffness,'conoid_eps': conoid_eps,'conoid_origin': list(conoid_origin),'conoid_insertion': list(conoid_insertion)}
+    
 
     # jnt_spring = joint_spring(q,model_params_struct,initCond_name)
     
@@ -448,12 +450,14 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
         conoid_eps = sp.symbols('conoid_eps')
         conoid_origin = sp.symbols('conoid_origin1:4')
         conoid_insertion = sp.symbols('conoid_insertion1:4')
+        constants_conoid = {'conoid_length': conoid_length,'conoid_stiffness': conoid_stiffness,'conoid_eps': conoid_eps,'conoid_origin': list(conoid_origin),'conoid_insertion': list(conoid_insertion)}
     elif derive == 'numeric':
         conoid_length = model_params_struct['params']['model'].item()['conoid_length'].item()[0][0]
         conoid_stiffness = model_params_struct['params']['model'].item()['conoid_stiffness'].item()[0][0]
         conoid_eps = model_params_struct['params']['model'].item()['conoid_eps'].item()[0][0]
         conoid_origin = model_params_struct['params']['model'].item()['conoid_origin'].item()[0]
         conoid_insertion = model_params_struct['params']['model'].item()['conoid_insertion'].item()[0]
+        constants_conoid = {}
     
     conoid_L = analytic_length_quat('clavicle_r','scapula_r', conoid_origin, conoid_insertion, q_new[4:], OS_model)
     F_conoid = conoid_force(conoid_L, conoid_length, conoid_stiffness, conoid_eps)
@@ -464,8 +468,6 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
     TEel_conoid = 1/2 * sp.Matrix(Jac[16:18])
     JacInSpat_conoid = sp.Matrix(TEsc_conoid).col_join(TEac_conoid).col_join(TEgh_conoid).col_join(TEel_conoid)
     TE_conoid = F_conoid * JacInSpat_conoid
-    constants_conoid = {'conoid_length': conoid_length,'conoid_stiffness': conoid_stiffness,'conoid_eps': conoid_eps,'conoid_origin': list(conoid_origin),'conoid_insertion': list(conoid_insertion)}
-
     
     if gen_matlab_functions == 1:
         qsubs = sp.symbols('qsubs0:13')
@@ -488,17 +490,17 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
                        muscle_constants = {},
                        parameters = {},
                        folder = '../equations_of_motion/quaternion')
-        # MatlabFunction(function = TE_subbed,
-        #                fun_name = 'TE_quat', assignto = 'TE',
-        #                coordinates = qsubs,
-        #                speeds = [],
-        #                inputs = actSym,
-        #                body_constants = {},
-        #                segments = [],
-        #                other_constants={},
-        #                muscle_constants = muscle_constants,
-        #                parameters = [],
-        #                folder = folder)
+        MatlabFunction(function = TE_subbed,
+                       fun_name = 'F_muscles_quat', assignto = 'TE',
+                       coordinates = qsubs,
+                       speeds = [],
+                       inputs = actSym,
+                       body_constants = {},
+                       segments = [],
+                       other_constants={},
+                       muscle_constants = muscle_constants,
+                       parameters = {},
+                       folder = '../equations_of_motion/quaternion')
         # MatlabFunction(function = mus_forces_subbed,
         #                fun_name = 'mus_forces_quat', assignto = 'mus_forces',
         #                coordinates = qsubs,

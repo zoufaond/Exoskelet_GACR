@@ -1,4 +1,4 @@
-function mm = mm_quat(t,q,u,model)
+function mm = MM_quaternion(t,q,u,model)
 I_clavicula_1 = model.I_clavicula(:,1);
 I_clavicula_2 = model.I_clavicula(:,2);
 I_clavicula_3 = model.I_clavicula(:,3);
