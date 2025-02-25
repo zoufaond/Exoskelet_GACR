@@ -429,8 +429,8 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
     
     TE = sp.Matrix(FQ[:-1])
     TE = TE.subs(q_new[17],0.01)
-    JacInSpat = JacInSpat_full.subs(q_new[17],0)
-    mus_lengths = mus_lengths_full.subs(q_new[17],0)
+    JacInSpat = JacInSpat_full.subs(q_new[17],0.01)
+    mus_lengths = mus_lengths_full.subs(q_new[17],0.01)
     mus_forces = mus_forces.subs(q_new[17],0)
     
     
@@ -474,33 +474,33 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
         q_subs_dict = dict(zip(q_new[4:-1],qsubs))
         segments = []
         TE_subbed = me.msubs(TE,q_subs_dict)
-        JacInSpat_subbed = me.msubs(JacInSpat_full,q_subs_dict)
-        mus_lengths_subbed = me.msubs(mus_lengths_full,q_subs_dict)
+        JacInSpat_subbed = me.msubs(JacInSpat,q_subs_dict)
+        mus_lengths_subbed = me.msubs(mus_lengths,q_subs_dict)
         mus_forces_subbed = me.msubs(mus_forces,q_subs_dict)
         TE_conoid_subbed = me.msubs(TE_conoid,q_subs_dict)
         
-        MatlabFunction(function = TE_conoid_subbed[:-1],
-                       fun_name = 'TE_conoid_quat', assignto = 'TE_conoid',
-                       coordinates = qsubs,
-                       speeds = [],
-                       inputs = [],
-                       body_constants = {},
-                       segments = [],
-                       other_constants = constants_conoid,
-                       muscle_constants = {},
-                       parameters = {},
-                       folder = '../equations_of_motion/quaternion')
-        MatlabFunction(function = TE_subbed,
-                       fun_name = 'F_muscles_quat', assignto = 'TE',
-                       coordinates = qsubs,
-                       speeds = [],
-                       inputs = actSym,
-                       body_constants = {},
-                       segments = [],
-                       other_constants={},
-                       muscle_constants = muscle_constants,
-                       parameters = {},
-                       folder = '../equations_of_motion/quaternion')
+        # MatlabFunction(function = TE_conoid_subbed[:-1],
+        #                fun_name = 'TE_conoid_quat', assignto = 'TE_conoid',
+        #                coordinates = qsubs,
+        #                speeds = [],
+        #                inputs = [],
+        #                body_constants = {},
+        #                segments = [],
+        #                other_constants = constants_conoid,
+        #                muscle_constants = {},
+        #                parameters = {},
+        #                folder = '../equations_of_motion/quaternion')
+        # MatlabFunction(function = TE_subbed,
+        #                fun_name = 'F_muscles_quat', assignto = 'TE',
+        #                coordinates = qsubs,
+        #                speeds = [],
+        #                inputs = actSym,
+        #                body_constants = {},
+        #                segments = [],
+        #                other_constants={},
+        #                muscle_constants = muscle_constants,
+        #                parameters = {},
+        #                folder = '../equations_of_motion/quaternion')
         # MatlabFunction(function = mus_forces_subbed,
         #                fun_name = 'mus_forces_quat', assignto = 'mus_forces',
         #                coordinates = qsubs,
@@ -511,28 +511,28 @@ def polynomials_quat(OS_model,derive,model_params_struct, gen_matlab_functions =
         #                other_constants={},
         #                muscle_constants = muscle_constants,
         #                parameters = [])
-        # MatlabFunction(function = JacInSpat_subbed,
-        #                fun_name = 'JacInSpatnoi_quat',assignto = 'JacInSpat',
-        #                coordinates = qsubs,
-        #                speeds = [],
-        #                inputs = [],
-        #                body_constants = {},
-        #                segments = [],
-        #                other_constants={},
-        #                muscle_constants = {},
-        #                parameters = [],
-        #                folder = '../Motions/' + motion_folder + '/Poly_functions')
-        # MatlabFunction(function = mus_lengths_subbed,
-        #                fun_name = 'mus_lengths_quat',assignto = 'mus_lengths',
-        #                coordinates = qsubs,
-        #                speeds = [],
-        #                inputs = [],
-        #                body_constants = {},
-        #                segments = [],
-        #                other_constants={},
-        #                muscle_constants = {},
-        #                parameters = [],
-        #                folder = '../Motions/' + motion_folder + '/Poly_functions')
+        MatlabFunction(function = JacInSpat_subbed,
+                       fun_name = 'momArms',assignto = 'MomArms',
+                       coordinates = qsubs,
+                       speeds = [],
+                       inputs = [],
+                       body_constants = {},
+                       segments = [],
+                       other_constants={},
+                       muscle_constants = {},
+                       parameters = {},
+                       folder = '../equations_of_motion/quaternion')
+        MatlabFunction(function = mus_lengths_subbed,
+                       fun_name = 'musLens',assignto = 'musLens',
+                       coordinates = qsubs,
+                       speeds = [],
+                       inputs = [],
+                       body_constants = {},
+                       segments = [],
+                       other_constants={},
+                       muscle_constants = {},
+                       parameters = {},
+                       folder = '../equations_of_motion/quaternion')
     
     return TE_subs, act, TE_conoid[:-1]
 

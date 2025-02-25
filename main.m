@@ -4,7 +4,9 @@ addpath equations_of_motion\quaternion\
 addpath equations_of_motion\euler\
 addpath Functions\
 load('data_model.mat');
+muscle_struct = loadOSstruct('OS_model_scabduction.mat');
 model = params.model;
+max_step_sim = 1e-3;
 
 % initEul = params.InitPosOptEul.initCondEul;
 % initQuat = params.InitPosOptEul.initCondQuat;
@@ -31,12 +33,11 @@ initQuat = DC_x0;
 
 %% simulace v simulinku
 % maximum step size
-max_step_sim = 1e-3;
 out = sim('shoulder_simulink.slx');
 
 %% vytvoreni .mot souboru, ktery lze otevrit v opensimu
 quat_out = out.simdata_Q.Data(:,:)';
-data2mot(quat_out(:,1:13),t_end,'Scabduction_FD.mot','quaternion','struct','YZY')
+% data2mot(quat_out(:,1:13),t_end,'Scabduction_FD.mot','quaternion','struct','YZY')
 
 %% grafy
 joint_names = {'SC','AC','GH'};
@@ -51,4 +52,14 @@ for i = 1:3
     xlabel('time[s]')
     ylabel('[-]')
     legend('DCq_0','FDq_0','DCq_1','FDq_1','DCq_2','FDq_2','DCq_3','FDq_3')
+end
+
+function res = invJtrans(quat)
+    q1 = quat(1);
+    q2 = quat(2);
+    q3 = quat(3);
+    q4 = quat(4);
+    res = [ q1/2,  q4/2, -q3/2;
+            -q4/2,  q1/2,  q2/2;
+            q3/2, -q2/2,  q1/2];
 end
