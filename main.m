@@ -9,19 +9,21 @@ model = params.model;
 model.c = 1;
 max_step_sim = 1e-3;
 
-initEul = params.InitPosOptEul.initCondEul;
-initEul = change_clavx(initEul',-initEul(3));
-initEul = initEul';
+% initEul = params.InitPosOptEul.initCondEul;
+% initEul = change_clavx(initEul',-initEul(3));
+% initEul = initEul';
 % initQuat = params.InitPosOptEul.initCondQuat;
 
 
-% % vysledek z Direct Collocation metody
-% DC_result = load("res_quat_Scabduction_200.mat");
-% DC_time = DC_result.data.tout;
-% t_end = DC_time(end);
-% DC_activations = DC_result.data.activations;
-% DC_excitations = DC_result.data.excitations;
-% DC_trajectories = DC_result.data.trajectories;
+% vysledek z Direct Collocation metody
+DC_result = load("res_euler_Scabduction_100.mat");
+DC_time = DC_result.data.tout;
+t_end = DC_time(end);
+DC_activations = DC_result.data.activations;
+DC_excitations = DC_result.data.excitations;
+DC_trajectories = DC_result.data.trajectories;
+initEul_q = change_clavx(DC_trajectories(1,1:10),-DC_trajectories(1,3));
+initEul = [initEul_q';zeros(10,1)];
 
 % %vytvoreni structu, ze ktereho jdou vstupni aktivace do modelu
 % simin.time = DC_time';
