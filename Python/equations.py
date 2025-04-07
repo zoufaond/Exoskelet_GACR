@@ -1120,7 +1120,7 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
     #rotate first body
     frame[0].orient_body_fixed(frame_ground, [q[0],q[1],0], rotation_order = joints[0])
     rot.append(frame[0].ang_vel_in(frame_ground))
-
+    print(rot)
     # set masscenter of first body
     masscenter[0].set_pos(offset_ground,com[0]*frame[0].x + com[1]*frame[0].y + com[2]*frame[0].z)
     masscenter[0].v2pt_theory(offset_ground,frame_ground,frame[0])
@@ -1251,29 +1251,20 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
         contTS = []
         contAI = []
         elips_trans = []
-        # elips_dim = []
+        elips_dim = []
 
         for i in range(3):
             contTS.append(data_struct['contTS'][0,0][0,i].item())
             contAI.append(data_struct['contAI'][0,0][0,i].item())
             elips_trans.append(data_struct['elips_trans'][0,0][0,i].item())
-            # elips_dim.append(data_struct['elips_dim'][0,0][0,i].item())
+            elips_dim.append(data_struct['elips_dim'][0,0][0,i].item())
+
         k_contact_in = data_struct['k_contact_in'][0,0].item()
         k_contact_out = data_struct['k_contact_out'][0,0].item()
         eps_in = data_struct['eps_in'][0,0].item()
         eps_out = data_struct['eps_out'][0,0].item()
         # first_elips_scale = model_params_struct['params'][initCond_name][0,0]['first_elips_scale'][0,0].item()
         # first_elips_scale = sp.symbols('first_elips_scale1:4')
-
-        # ## Flexion ##
-        # elips_dim = [0.1869, 0.254, 0.1243]
-
-        # ## Scabduction
-        elips_dim = [0.1646, 0.2317, 0.1256]
-
-        # # Elevation
-        # elips_dim = [0.1846, 0.257, 0.1056]
-
         first_elips_scale = [1.0,1.0,1.0]
         # elips_trans = sp.symbols('elips_trans1:4')
         second_elips_scale = data_struct['second_elips_scale'][0,0].item()
@@ -1318,14 +1309,14 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
     cont_force1 = [(contact_point1,frame_ground.x*Fx1+frame_ground.y*Fy1+frame_ground.z*Fz1)]
     cont_force2 = [(contact_point2,frame_ground.x*Fx2+frame_ground.y*Fy2+frame_ground.z*Fz2)]
     CONT = cont_force1+cont_force2
-
-    KM = me.KanesMethod(frame_ground, q_ind=q[0:2]+q[3:10], u_ind=u[0:2]+u[3:10], kd_eqs=kindeq)
+    q_locked = q[0:2]+q[3:10]
+    u_locked = u[0:2]+u[3:10]
+    KM = me.KanesMethod(frame_ground, q_ind=q_locked, u_ind=u_locked, kd_eqs=kindeq)
     (fr, frstar) = KM.kanes_equations(BODY, (FG+DAMP+CONT))
     MM = KM.mass_matrix_full
     FO = KM.forcing_full
     xdot = (KM.q.col_join(KM.u)).diff()
     print('equations created')
-    print(q[0:2]+q[3:9])
 
     if gen_matlab_functions == 1:
     
@@ -1339,8 +1330,8 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
 
     # sympy dynamicsymbols has to be substituted with symbols (so it can be printed in octave_code)
 
-        subs_q = {q[i]: qsubs[i] for i in range(len(q))}
-        subs_u = {u[i]: usubs[i] for i in range(len(u))}
+        subs_q = {q_locked[i]: qsubs[i] for i in range(len(q_locked))}
+        subs_u = {u_locked[i]: usubs[i] for i in range(len(u_locked))}
         mm = me.msubs(KM.mass_matrix_full,subs_q,subs_u)
         fo = me.msubs(KM.forcing_full,subs_q,subs_u)
 
