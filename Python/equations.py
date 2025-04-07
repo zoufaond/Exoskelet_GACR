@@ -1118,7 +1118,7 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
     offset_ground.set_vel(frame_ground,0)
 
     #rotate first body
-    frame[0].orient_body_fixed(frame_ground, q[0:3], rotation_order = joints[0])
+    frame[0].orient_body_fixed(frame_ground, [q[0],q[1],0], rotation_order = joints[0])
     rot.append(frame[0].ang_vel_in(frame_ground))
 
     # set masscenter of first body
@@ -1160,7 +1160,10 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
         DAMP.append((frame[i-1], -damping))
 
     for i in range(9):
-        kindeq.append(q[i].diff()-u[i])
+        if i == 2:
+            continue
+        else:
+            kindeq.append(q[i].diff()-u[i])
 
     # symbols (or values) for ulna and radius
     ulna_rot_frame = me.ReferenceFrame('ulna_rot_frame')
@@ -1315,14 +1318,15 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
     cont_force1 = [(contact_point1,frame_ground.x*Fx1+frame_ground.y*Fy1+frame_ground.z*Fz1)]
     cont_force2 = [(contact_point2,frame_ground.x*Fx2+frame_ground.y*Fy2+frame_ground.z*Fz2)]
     CONT = cont_force1+cont_force2
-    
-    KM = me.KanesMethod(frame_ground, q_ind=q, u_ind=u, kd_eqs=kindeq)
+
+    KM = me.KanesMethod(frame_ground, q_ind=q[0:2]+q[3:10], u_ind=u[0:2]+u[3:10], kd_eqs=kindeq)
     (fr, frstar) = KM.kanes_equations(BODY, (FG+DAMP+CONT))
     MM = KM.mass_matrix_full
     FO = KM.forcing_full
     xdot = (KM.q.col_join(KM.u)).diff()
     print('equations created')
-    
+    print(q[0:2]+q[3:9])
+
     if gen_matlab_functions == 1:
     
         body_constants = {'I_': inertia,'mass_':mass,'com_':com,'offset_':offset,'c': c,'g': g}
@@ -1365,7 +1369,7 @@ def create_eoms_eul(model_params_struct, derive = 'symbolic',gen_matlab_function
 
         print('matlab functions generated')
 
-    return MM,FO,q,u,fr,frstar,kindeq,xdot,first_elips_scale,elips_trans
+    # return MM,FO,q,u,fr,frstar,kindeq,xdot,first_elips_scale,elips_trans
     # return q
 
 def muscle_force(act, lmt, fmax, lceopt, lslack):
