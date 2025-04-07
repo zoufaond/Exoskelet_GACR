@@ -32,7 +32,8 @@ DC_x0(1:4) = DC_x0(1:4)/norm(DC_x0(1:4));
 DC_x0(5:8) = DC_x0(5:8)/norm(DC_x0(5:8));
 DC_x0(9:12) = DC_x0(9:12)/norm(DC_x0(9:12));
 initQuat = [DC_x0;DC_activations0];
-
+%%
+k = 1e2;
 %% simulace v simulinku
 % maximum step size
 tic

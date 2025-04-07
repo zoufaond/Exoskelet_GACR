@@ -190,8 +190,8 @@ def polynomials_euler(OS_model,derive,model_params_struct, gen_matlab_functions 
     TE = sp.Matrix(FQ[:-1])
     
     TE = TE.subs(q_new[13],0.01)
-    jacobian = jacobian_full.subs(q_new[13],0)
-    mus_lengths = mus_lengths_full.subs(q_new[13],0)
+    jacobian = jacobian_full.subs(q_new[13],0.01)
+    mus_lengths = mus_lengths_full.subs(q_new[13],0.01)
     mus_forces = mus_forces.subs(q_new[13],0)
     
     symbols_list = TE.free_symbols
@@ -233,8 +233,8 @@ def polynomials_euler(OS_model,derive,model_params_struct, gen_matlab_functions 
         segments = []
         TE_conoid_subbed = me.msubs(TE_conoid,q_subs_dict)
         TE_subbed = me.msubs(TE,q_subs_dict)
-        jacobian_subbed = me.msubs(jacobian_full,q_subs_dict)
-        mus_lengths_subbed = me.msubs(mus_lengths_full,q_subs_dict)
+        jacobian_subbed = me.msubs(jacobian,q_subs_dict)
+        mus_lengths_subbed = me.msubs(mus_lengths,q_subs_dict)
         mus_forces_subbed = me.msubs(mus_forces,q_subs_dict)
         # jnt_spring_subbed = me.msubs(jnt_spring,q_subs_dict)
         
@@ -271,28 +271,28 @@ def polynomials_euler(OS_model,derive,model_params_struct, gen_matlab_functions 
         #                muscle_constants = muscle_constants,
         #                parameters = [],
         #                folder = 'euler')
-        # MatlabFunction(function = jacobian_subbed,
-        #                fun_name = 'jacobiannoi_eul',assignto = 'jacobian',
-        #                coordinates = qsubs,
-        #                speeds = [],
-        #                inputs = [],
-        #                body_constants = {},
-        #                segments = [],
-        #                other_constants={},
-        #                muscle_constants = {},
-        #                parameters = [],
-        #                folder = '../Motions/' + motion_folder + '/Poly_functions')
-        # MatlabFunction(function = mus_lengths_subbed,
-        #                fun_name = 'mus_lengths_eul',assignto = 'mus_lengths',
-        #                coordinates = qsubs,
-        #                speeds = [],
-        #                inputs = [],
-        #                body_constants = {},
-        #                segments = [],
-        #                other_constants={},
-        #                muscle_constants = {},
-        #                parameters = [],
-        #                folder = '../Motions/' + motion_folder + '/Poly_functions')
+        MatlabFunction(function = jacobian_subbed,
+                       fun_name = 'momArms',assignto = 'jacobian',
+                       coordinates = qsubs,
+                       speeds = [],
+                       inputs = [],
+                       body_constants = {},
+                       segments = [],
+                       other_constants={},
+                       muscle_constants = {},
+                       parameters = {},
+                       folder = '../equations_of_motion/euler')
+        MatlabFunction(function = mus_lengths_subbed,
+                       fun_name = 'musLens',assignto = 'mus_lengths',
+                       coordinates = qsubs,
+                       speeds = [],
+                       inputs = [],
+                       body_constants = {},
+                       segments = [],
+                       other_constants={},
+                       muscle_constants = {},
+                       parameters = {},
+                       folder = '../equations_of_motion/euler')
         # MatlabFunction(function = jnt_spring_subbed,
         #                fun_name = 'jnt_spring_eul',assignto = 'jnt_spring_eul',
         #                coordinates = qsubs,
